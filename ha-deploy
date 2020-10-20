@@ -1,0 +1,38 @@
+#!/bin/bash
+  
+#
+# (re)deploy home assistant as podman container
+#
+
+function get_image_hash(){
+    podman history localhost/home-assistant-custom:latest  |head -2 |tail -1 |cut -d " " -f 1
+}
+
+set -x
+
+CURRENT_IMAGE=$(get_image_hash)
+
+
+# get fresh image
+podman pull docker.io/homeassistant/home-assistant
+podman build -t home-assistant-custom -f home-assistant-custom.dockerfile
+NEW_IMAGE=$(get_image_hash)
+
+#if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then 
+#    echo "no change in image, not restarting"
+#    exit 1
+#fi
+
+# get rid of current instance
+systemctl stop home-assistant.service
+podman stop home-assistant
+podman rm home-assistant
+
+# setup service & restart to use new image
+podman run -dt --name=home-assistant -v /home/homeassistant:/config:Z -v /etc/localtime:/etc/localtime:ro --net=host -d localhost/home-assistant-custom:latest
+podman generate systemd home-assistant > /etc/systemd/system/home-assistant.service
+systemctl daemon-reload
+systemctl enable home-assistant.service
+systemctl start home-assistant.service
+systemctl status --no-pager home-assistant.service
+podman logs -l
