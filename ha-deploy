@@ -18,10 +18,10 @@ podman pull docker.io/homeassistant/home-assistant
 podman build -t home-assistant-custom -f home-assistant-custom.dockerfile
 NEW_IMAGE=$(get_image_hash)
 
-#if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then 
-#    echo "no change in image, not restarting"
-#    exit 1
-#fi
+if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then 
+    echo "no change in image, not restarting"
+    exit 1
+fi
 
 # get rid of current instance
 systemctl stop home-assistant.service
