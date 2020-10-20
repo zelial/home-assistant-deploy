@@ -1,6 +1,6 @@
 # home-assistant-deploy
 
-Running HomeAssistant on custom home server, docker/podman seams to be the easiest option:
+Running HomeAssistant on custom home server, docker/podman seems to be the easiest option:
 
 1. use base image docker.io/homeassistant/home-assistant with few dependencies for HACS
 2. store configuration in /home/homeassistant (HACS already installed)
