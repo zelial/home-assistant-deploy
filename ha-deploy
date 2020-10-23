@@ -5,7 +5,7 @@
 #
 
 function get_image_hash(){
-    podman history localhost/home-assistant-custom:latest  |head -2 |tail -1 |cut -d " " -f 1
+    podman history docker.io/homeassistant/home-assistant  |head -2 |tail -1 |cut -d " " -f 1
 }
 
 set -x
@@ -15,13 +15,15 @@ CURRENT_IMAGE=$(get_image_hash)
 
 # get fresh image
 podman pull docker.io/homeassistant/home-assistant
-podman build -t home-assistant-custom -f home-assistant-custom.dockerfile
 NEW_IMAGE=$(get_image_hash)
 
 if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then 
     echo "no change in image, not restarting"
     exit 1
 fi
+
+# newer base image => rebuild
+podman build -t home-assistant-custom -f home-assistant-custom.dockerfile
 
 # get rid of current instance
 systemctl stop home-assistant.service
