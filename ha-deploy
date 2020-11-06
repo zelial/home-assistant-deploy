@@ -23,7 +23,7 @@ if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then
 fi
 
 # newer base image => rebuild
-podman build -t home-assistant-custom -f home-assistant-custom.dockerfile
+podman build -t home-assistant-custom -f home-assistant.dockerfile
 
 # get rid of current instance
 systemctl stop home-assistant.service
