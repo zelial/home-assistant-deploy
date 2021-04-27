@@ -1,5 +1,5 @@
 #!/bin/bash
-  
+
 #
 # (re)deploy home assistant as podman container
 #
@@ -22,7 +22,9 @@ if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then
     exit 1
 fi
 
-# newer base image => rebuild
+# retag current image as 'previous' to have a backup
+podman tag localhost/home-assistant-custom:latest localhost/home-assistant-custom:previous
+# rebuild
 podman build -t home-assistant-custom -f home-assistant.dockerfile
 
 # get rid of current instance
