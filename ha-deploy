@@ -17,7 +17,7 @@ CURRENT_IMAGE=$(get_image_hash)
 podman pull docker.io/homeassistant/home-assistant
 NEW_IMAGE=$(get_image_hash)
 
-if [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then 
+if [[ "$1" != "--force" ]] && [[ "$CURRENT_IMAGE" == "$NEW_IMAGE" ]] ; then
     echo "no change in image, not restarting"
     exit 1
 fi
@@ -39,4 +39,4 @@ systemctl daemon-reload
 systemctl enable home-assistant.service
 systemctl start home-assistant.service
 systemctl status --no-pager home-assistant.service
-podman logs -l
+podman logs home-assistant
